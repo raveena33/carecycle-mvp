@@ -3,7 +3,6 @@ import { getFirestore } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
 
-// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyA_ojRNi1aAEAy3pJaryMn8oiNFGol4-8s",
   authDomain: "carecycle-82585.firebaseapp.com",
@@ -14,12 +13,12 @@ const firebaseConfig = {
   measurementId: "G-H52PWVKCRC"
 };
 
-// Initialize Firebase
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
-const analytics = getAnalytics(app); // Optional, for tracking
+const analytics = getAnalytics(app);
 
-// ✅ Correctly export Firebase modules
+
 export { app, db, auth, provider };

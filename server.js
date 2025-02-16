@@ -11,19 +11,19 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ✅ Twilio Credentials
+
 const accountSid = process.env.TWILIO_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const twilioPhoneNumber = process.env.TWILIO_PHONE_NUMBER;
 
 if (!accountSid || !authToken || !twilioPhoneNumber) {
-  console.error("❌ Twilio Credentials Missing! Check your .env file.");
+  console.error("Twilio Credentials Missing! Check your .env file.");
   process.exit(1);
 }
 
 const client = new twilio(accountSid, authToken);
 
-// ✅ Firebase Setup
+
 const firebaseConfig = {
   apiKey: "AIzaSyA_xxxxx",
   authDomain: "carecycle-82585.firebaseapp.com",
@@ -36,7 +36,7 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
 
-// ✅ Senior places request via Twilio
+
 app.post("/voice", async (req, res) => {
   const response = new twilio.twiml.VoiceResponse();
   response.say("Welcome to CareCycle. Press 1 for groceries, 2 for companionship, or 3 for medical visits.");
@@ -49,7 +49,7 @@ app.post("/voice", async (req, res) => {
   res.type("text/xml").send(response.toString());
 });
 
-// ✅ Handles Senior’s Service Selection
+
 app.post("/handle-selection", async (req, res) => {
   const selection = req.body.Digits;
   let service = "";
@@ -70,7 +70,7 @@ app.post("/handle-selection", async (req, res) => {
     phone: req.body.From,
   });
 
-  console.log(`✅ Request logged: ${service} for ${req.body.From}`);
+  console.log(`Request logged: ${service} for ${req.body.From}`);
 
   const response = new twilio.twiml.VoiceResponse();
   response.say(`Thank you. Your request for ${service} has been received. We will notify you once a volunteer accepts.`);
@@ -78,7 +78,7 @@ app.post("/handle-selection", async (req, res) => {
   res.type("text/xml").send(response.toString());
 });
 
-// ✅ Volunteer accepts the request (Triggered from PendingRequests page)
+
 app.post("/accept-request", async (req, res) => {
   const { requestId, volunteerName, volunteerPhone } = req.body;
 
@@ -100,24 +100,23 @@ app.post("/accept-request", async (req, res) => {
       volunteerPhone: volunteerPhone,
     });
 
-    console.log(`✅ Request ${requestId} assigned to ${volunteerName}`);
+    console.log(`Request ${requestId} assigned to ${volunteerName}`);
 
-    // 🔹 Call back the senior to confirm the volunteer match
+   
     callSeniorConfirmation(requestSnap.data().phone, volunteerName, requestSnap.data().service);
 
     res.json({ success: "Request accepted successfully!" });
   } catch (error) {
-    console.error("❌ Error accepting request:", error);
+    console.error("Error accepting request:", error);
     res.status(500).json({ error: "Failed to accept request." });
   }
 });
 
-// ✅ Call the Senior to Confirm Volunteer Match
-const NGROK_URL = "https://72bf-199-212-64-66.ngrok-free.app"; // ✅ Replace with actual ngrok URL
+const NGROK_URL = "https://72bf-199-212-64-66.ngrok-free.app"; // ngrok URL
 
 const callSeniorConfirmation = async (seniorPhone, volunteerName, service) => {
   try {
-    console.log(`📞 Calling senior ${seniorPhone} for ${service} with ${volunteerName}...`);
+    console.log(`Calling senior ${seniorPhone} for ${service} with ${volunteerName}...`);
 
     const call = await client.calls.create({
       url: `${NGROK_URL}/confirm-call?volunteer=${encodeURIComponent(volunteerName)}&service=${encodeURIComponent(service)}`,
@@ -125,33 +124,32 @@ const callSeniorConfirmation = async (seniorPhone, volunteerName, service) => {
       from: twilioPhoneNumber,
     });
 
-    console.log(`✅ Call placed to ${seniorPhone}: ${call.sid}`);
+    console.log(`Call placed to ${seniorPhone}: ${call.sid}`);
   } catch (error) {
-    console.error("❌ Error calling senior:", error);
+    console.error("Error calling senior:", error);
   }
 };
 
-// ✅ Twilio Reads the Confirmation Message
+
 app.get("/confirm-call", (req, res) => {
   try {
     const { volunteer, service } = req.query;
 
     if (!volunteer || !service) {
-      console.error("❌ Missing parameters in /confirm-call");
+      console.error("Missing parameters in /confirm-call");
       return res.status(400).send("Missing volunteer or service parameters");
     }
 
-    console.log(`📞 Confirming match: ${volunteer} for ${service}`);
+    console.log(`Confirming match: ${volunteer} for ${service}`);
 
     const response = new twilio.twiml.VoiceResponse();
     response.say(`Your request for ${service} has been assigned to ${volunteer}. They will be in touch soon.`);
     
     res.type("text/xml").send(response.toString());
   } catch (error) {
-    console.error("❌ Error generating TwiML:", error);
+    console.error("Error generating TwiML:", error);
     res.status(500).send("Error generating TwiML");
   }
 });
 
-// ✅ Start Server
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

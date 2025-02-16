@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
-import { auth, provider, db } from "./firebase";  // ✅ Firebase
+import { auth, provider, db } from "./firebase";  
 import { signInWithPopup } from "firebase/auth";
 import { collection, addDoc } from "firebase/firestore";
 import Registration from "./components/Registration";
@@ -9,25 +9,12 @@ import VolunteerRegistration from "./components/VolunteerRegistration";
 import SeniorRegistration from "./components/SeniorRegistration";
 import PendingRequests from "./components/PendingRequests";
 import "./style.css"
-//import VolunteerMatching from "./VolunteerMatching";
+
 
 function App() {
   const [user, setUser] = useState(null);
   const [requestStatus, setRequestStatus] = useState("");
 
-  // ✅ Google Sign-In Function (Commented Out)
-  /*
-  const signIn = () => {
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        setUser(result.user);
-        console.log("Logged in:", result.user);
-      })
-      .catch((error) => console.error("Login Error:", error));
-  };
-  */
-
-  // ✅ Add a Test Request to Firestore
   const addTestRequest = async () => {
     try {
       await addDoc(collection(db, "requests"), {
@@ -42,7 +29,6 @@ function App() {
     }
   };
 
-  // ✅ Call Twilio API to Trigger a Call
   const testTwilioCall = async () => {
     try {
       const response = await fetch("http://localhost:5000/voice", {
@@ -66,10 +52,7 @@ function App() {
   return (
     <Router>
       <div className="App">
-        {/* ✅ Single Title at the Top */}
-        
-
-        {/* ✅ Routes for Navigation */}
+       
         <Routes>
           <Route path="/" element={<Registration />} />
           <Route path="/volunteer-registration" element={<VolunteerRegistration />} />
@@ -77,14 +60,14 @@ function App() {
           <Route path="/pending-requests" element={<PendingRequests />} />
         </Routes>
 
-       {/* {/* ✅ Firestore Request Test */}
+       {/* {/* Firestore Request Test */}
         {/*<button onClick={addTestRequest}>Add Test Request to Firestore</button>
        {/* {requestStatus && <p>{requestStatus}</p>}*/
 
-        /* ✅ Twilio Call Test */
+        /* Twilio Call Test */
       /*}  <button onClick={testTwilioCall}>Test Twilio Call</button>*/}
 
-        {/* ✅ Volunteer Matching Feature */}
+        {/*Volunteer Matching Feature */}
         {/*<VolunteerMatching />*/}
       </div>
     </Router>

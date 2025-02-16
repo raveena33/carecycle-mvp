@@ -5,7 +5,7 @@ import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
 const PendingRequests = () => {
   const [requests, setRequests] = useState([]);
 
-  // ✅ Fetch Pending Requests from Firestore
+  
   useEffect(() => {
     const fetchRequests = async () => {
       try {
@@ -14,37 +14,21 @@ const PendingRequests = () => {
           .map((doc) => ({ id: doc.id, ...doc.data() }))
           .filter((req) => req.status === "Pending");
 
-        console.log("🔥 Fetched Pending Requests:", pendingRequests); // Debugging Log
+        console.log("Fetched Pending Requests:", pendingRequests); 
 
         setRequests(pendingRequests);
       } catch (error) {
-        console.error("❌ Error fetching requests:", error);
+        console.error("Error fetching requests:", error);
       }
     };
 
     fetchRequests();
   }, []);
 
-  // ✅ Accept Request (Assign Volunteer)
-  /*const acceptRequest = async (requestId) => {
-    try {
-      await updateDoc(doc(db, "requests", requestId), {
-        status: "Assigned",
-        volunteer: "Volunteer", // Placeholder since no email system
-        volunteerPhone: "Not Provided", // Modify if phone field exists
-      });
-
-      alert("You have accepted the request!");
-      setRequests((prev) => prev.filter((req) => req.id !== requestId)); // Remove accepted request from list
-    } catch (error) {
-      console.error("Error accepting request:", error);
-      alert("Failed to accept request.");
-    }
-  };
-*/
+ 
 const acceptRequest = async (requestId) => {
-    const volunteerName = "Volunteer"; // Change this dynamically if you have authentication
-    const volunteerPhone = "1234567890"; // If you have phone numbers stored, pass them
+    const volunteerName = "Volunteer"; 
+    const volunteerPhone = "1234567890"; 
 
     try {
         const response = await fetch("http://localhost:5000/accept-request", {
@@ -62,7 +46,7 @@ const acceptRequest = async (requestId) => {
         const data = await response.json();
         if (response.ok) {
             alert("You have accepted the request!");
-            setRequests((prev) => prev.filter((req) => req.id !== requestId)); // Remove accepted request
+            setRequests((prev) => prev.filter((req) => req.id !== requestId)); 
         } else {
             throw new Error(data.error || "Failed to accept request");
         }

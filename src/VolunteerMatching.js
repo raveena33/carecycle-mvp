@@ -19,7 +19,7 @@ const VolunteerMatching = () => {
     const availableVolunteers = volunteersSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 
     if (availableVolunteers.length > 0) {
-      const assignedVolunteer = availableVolunteers[0]; // Pick the first one
+      const assignedVolunteer = availableVolunteers[0]; 
       await updateDoc(doc(db, "requests", requestId), { status: "Assigned", volunteer: assignedVolunteer.name });
 
       alert(`Assigned ${assignedVolunteer.name} to request ${requestId}`);

@@ -22,12 +22,9 @@ const VolunteerRegistration = () => {
     if (checked) {
       setFormData((prev) => ({
         ...prev,
-        services: [...prev.services, value],
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        services: prev.services.filter((service) => service !== value),
+        services: checked
+          ? [...prev.services, value]
+          : prev.services.filter((service) => service !== value),
       }));
     }
   };
@@ -37,10 +34,7 @@ const VolunteerRegistration = () => {
     try {
       await addDoc(collection(db, "volunteers"), formData);
       alert("Volunteer registered successfully!");
-
-      // ✅ Redirect to Pending Requests After Registering
-      navigate("/pending-requests");
-
+      navigate("/pending-requests"); 
     } catch (error) {
       console.error("Error registering volunteer:", error);
       alert("Failed to register.");
@@ -54,7 +48,7 @@ const VolunteerRegistration = () => {
         <input type="text" name="name" placeholder="Name" onChange={handleChange} required />
         <input type="text" name="phone" placeholder="Phone" onChange={handleChange} required />
         <input type="text" name="address" placeholder="Address" onChange={handleChange} required />
-
+        
         <label>
           <input type="checkbox" value="Groceries" onChange={handleServiceChange} /> Groceries
         </label>
@@ -64,7 +58,8 @@ const VolunteerRegistration = () => {
         <label>
           <input type="checkbox" value="Medical Care" onChange={handleServiceChange} /> Medical Care
         </label>
-<br></br>
+
+        <br />
         <button type="submit">Register</button>
       </form>
     </div>
